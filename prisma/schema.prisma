@@ -1,0 +1,199 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model VerificationRequest {
+  id         Int      @id @default(autoincrement())
+  identifier String
+  token      String   @unique
+  expires    DateTime
+  createdAt  DateTime @default(now()) @map(name: "created_at")
+  updatedAt  DateTime @default(now()) @map(name: "updated_at")
+
+  @@map(name: "verification_requests")
+}
+
+enum Role {
+  ADMIN
+  PARTNER
+}
+
+model User {
+  id Int @id @default(autoincrement())
+
+  role Role
+
+  companyId Int?     @map("company_id")
+  Company   Company? @relation(fields: [companyId], references: [id])
+
+  name          String?
+  email         String?   @unique
+  emailVerified DateTime? @map(name: "email_verified")
+
+  createdAt DateTime @default(now()) @map(name: "created_at")
+  updatedAt DateTime @default(now()) @map(name: "updated_at")
+
+  @@map(name: "users")
+}
+
+model Company {
+  id   Int    @id @default(autoincrement())
+  name String
+
+  createdAt DateTime @default(now()) @map(name: "created_at")
+  updatedAt DateTime @default(now()) @map(name: "updated_at")
+
+  users     User[]
+  workshops Workshop[]
+
+  @@map("companies")
+}
+
+enum WorkshopState {
+  UNPUBLISHED
+  APPLICATION
+  SELECTION
+  DONE
+}
+
+model Account {
+  id         Int    @id @default(autoincrement())
+  compoundId String @unique @map(name: "compound_id")
+  userId     Int    @map(name: "user_id")
+
+  providerType      String @map(name: "provider_type")
+  providerId        String @map(name: "provider_id")
+  providerAccountId String @map(name: "provider_account_id")
+
+  refreshToken       String?   @map(name: "refresh_token")
+  accessToken        String?   @map(name: "access_token")
+  accessTokenExpires DateTime? @map(name: "access_token_expires")
+
+  createdAt DateTime @default(now()) @map(name: "created_at")
+  updatedAt DateTime @default(now()) @map(name: "updated_at")
+
+  @@index([providerAccountId], name: "providerAccountId")
+  @@index([providerId], name: "providerId")
+  @@index([userId], name: "userId")
+  @@map(name: "accounts")
+}
+
+model Session {
+  id           Int      @id @default(autoincrement())
+  userId       Int      @map(name: "user_id")
+  expires      DateTime
+  sessionToken String   @unique @map(name: "session_token")
+  accessToken  String   @unique @map(name: "access_token")
+  createdAt    DateTime @default(now()) @map(name: "created_at")
+  updatedAt    DateTime @default(now()) @map(name: "updated_at")
+
+  @@map(name: "sessions")
+}
+
+model Apply {
+  id          Int      @id @default(autoincrement())
+  student_id  Student  @relation(fields: [studentId], references: [id])
+  workshop_id Workshop @relation(fields: [workshopId], references: [id])
+  selected    Boolean
+
+  studentId  Int
+  workshopId Int
+  @@map(name: "applies")
+}
+
+model University {
+  id   Int    @id @default(autoincrement())
+  name String @unique
+
+  @@map(name: "universities")
+}
+
+model Degree {
+  id   Int    @id @default(autoincrement())
+  name String @unique
+
+  @@map(name: "degrees")
+}
+
+model Major {
+  id   Int    @id @default(autoincrement())
+  name String @unique
+
+  @@map(name: "majors")
+}
+
+model Source {
+  id   Int    @id @default(autoincrement())
+  name String @unique
+
+  Marketing Marketing[]
+  @@map(name: "sources")
+}
+
+model Marketing {
+  id     Int    @id @default(autoincrement())
+  source Source @relation(fields: [sourceId], references: [id])
+
+  createdAt DateTime @default(now()) @map(name: "created_at")
+  updatedAt DateTime @default(now()) @map(name: "updated_at")
+
+  workshopId Int
+  sourceId   Int
+  Workshop   Workshop @relation(fields: [workshopId], references: [id])
+  @@map(name: "marketing")
+}
+
+model Student {
+  id                 Int     @id @default(autoincrement())
+  name               String
+  prename            String
+  email              String
+  semester           Int
+  university         String
+  gpa                Float
+  abigpa             Float
+  cvpath             String
+  torpath            String
+  captchaScore       Float
+  acceptedNewsletter Boolean @default(false)
+
+  streetAndHouseNumber String @default("")
+  adressLineTwo        String @default("")
+  postalCode           String @default("")
+  city                 String @default("")
+
+  majorName  String
+  Apply      Apply[]
+  degreeName String
+  @@map(name: "students")
+}
+
+model Workshop {
+  id           Int           @id @default(autoincrement())
+  company      Company       @relation(fields: [companyId], references: [id])
+  name         String
+  deadline     DateTime
+  state        WorkshopState
+  year         Int
+  date         DateTime
+  seats        Int
+  description  String        @db.Text
+  imagePath    String
+  imageVersion Int           @default(0)
+
+  createdAt DateTime @default(now()) @map(name: "created_at")
+  updatedAt DateTime @default(now()) @map(name: "updated_at")
+
+  Apply     Apply[]
+  Marketing Marketing[]
+  companyId Int
+  @@map(name: "workshops")
+}

@@ -1,0 +1,9 @@
+{
+    "apps": [
+        {
+            "name": "workshop",
+            "script": "npm",
+            "args" : "run prod"
+        }
+    ]
+}

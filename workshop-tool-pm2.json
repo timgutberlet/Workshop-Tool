@@ -1,0 +1,9 @@
+{
+    "apps": [
+        {
+            "name": "workshop-dev",
+            "script": "npm",
+            "args" : "run dev"
+        }
+    ]
+}

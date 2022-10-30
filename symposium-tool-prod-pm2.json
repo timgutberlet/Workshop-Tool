@@ -1,0 +1,9 @@
+{
+    "apps": [
+        {
+            "name": "symposium",
+            "script": "npm",
+            "args" : "run prod-symposium"
+        }
+    ]
+}

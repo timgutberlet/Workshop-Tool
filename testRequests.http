@@ -1,0 +1,46 @@
+### USE THE VS-CODE PLUGIN "REST Client" to send requests within VS-CODE
+
+###
+GET http://localhost:3000/api/public/workshops HTTP/1.1
+Content-Type: application/json
+
+###
+POST http://localhost:3000/api/public/applies HTTP/1.1
+Content-Type: application/json
+
+{
+    "name": "test",
+    "prename": "test",
+    "email": "test@test.test",
+    "semester": "1",
+    "university": "test",
+    "gpa": "1",
+    "bachgpa": "1",
+    "abigpa": "1",
+    "majorName": "test",
+    "degreeName": "test",
+    "workshops": [1,2]
+}
+
+###
+PUT http://localhost:3000/api/partner/applies/12
+Content-Type: application/json
+
+{
+    "selected": true
+}
+
+###
+GET http://localhost:3000/api/partner/workshops/1
+Content-Type: application/json
+
+
+###
+POST https://www.google.com/recaptcha/api/siteverify
+Content-Type: application/json
+
+{
+    "secret": "6LeyQ3YcAAAAAKYRhehOPDVSR8Mo8dkXALpHczJT",
+    "response": "03AGdBq27-vBEezian5Lj5MY3R9_LnUXWdRIb8ctZinNYj6v9HXEZGEW-ax2VZuedO4SV6IQMWeWgS8emere3YGVO47PHjF97GI9qqj1nkBjWs8iq7QWYNM4VIBcGeCHEDTNq5NqAPLUfLOLvSTLVWhPf1ffBoZ--hTVmWNjqp-l4PDQdpGAuwjgWWD3kUkIKIeyu0zhvx1bhwIZKLe8UH_m25wwWsQZ9PssU4oDIOmBpNbu_JzVZnwWvLRiBviDTMjzZezC6Xo2TVd6qFjD3IMlJ5Vj-PfRE5DkTpWbBsogthwQ1VUiSeptSBpcyJn6AwrsHpYgNvsI023B2W-PmxlHKWb3aR2SYlOTc0VmYAsS3KlWSxZR38_XjKfZZNCfIiDBTjVJqfGhFywihIF8mNnrJOu_NQXUvh7a3qcc1dzUc0wDScdgk7GW3UhlyW9ZUzjaUOV0JE8uwr"
+}
+
